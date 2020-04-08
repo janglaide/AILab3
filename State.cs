@@ -8,9 +8,11 @@ namespace AILab3
         private static int _N;
         private readonly Ball[] _balls = new Ball[_N];   //balls array in current state
         private readonly int _ptr;   //empty place`s index
+        private readonly int _cost;
         private bool _closed;
         private List<State> _neighbours = new List<State>();
         public List<State> Neighbours { get => _neighbours; }   //neighbour states
+        public int Cost { get => _cost; }
         public bool Closed { get => _closed; set => _closed = value; }
         public Ball this[int i]
         {
@@ -23,6 +25,22 @@ namespace AILab3
             _N = balls.Length;
             _balls = balls;
             _closed = false;
+            _cost = GetCost();
+        }
+        private int GetCost()
+        {
+            var counter = 0;
+            for(var i = 0; i < _N / 2; i++)
+            {
+                if (this[i].Color == "B")
+                    counter++;
+            }
+            for(var i = _N / 2 + 1; i < _N; i++)
+            {
+                if (this[i].Color == "W")
+                    counter++;
+            }
+            return counter;
         }
         public void FindNextStates() //finds next states (neighbours)
         {
@@ -81,19 +99,7 @@ namespace AILab3
         }
         public bool IfRecordFound() //returns true if we found a solution
         {
-            if (_ptr != _N / 2)
-                return false;
-            for(var i = 0; i < _N / 2; i++)
-            {
-                if (this[i].Color != "B")
-                    return false;
-            }
-            for(var i = _N / 2 + 1; i < _N; i++)
-            {
-                if (this[i].Color != "W")
-                    return false;
-            }
-            return true;
+            return _cost == 6 ? true : false;
         }
         public bool IsInList(List<State> list)  //returns true if State is in list
         {

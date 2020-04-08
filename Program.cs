@@ -22,7 +22,7 @@ namespace AILab3
 
             CreateTree(start, ref statesList); //creating a states tree // 140 states
             var iterations = 0;
-            var result = SHCAlgorythm(1000, start, statesList, ref iterations); //stochastic hill climb
+            var result = SHCAlgorythm(140, start, statesList, ref iterations); //stochastic hill climb
 
             foreach (var x in result)
                 x.Output();
@@ -45,8 +45,7 @@ namespace AILab3
         {                                                           //stochastic hill climb
             var current = start;
             var path = new List<State>();
-            var i = 0;
-            while(i < maxI) //infinite cycle
+            while(iterations < maxI) //infinite cycle
             {
                 path.Add(current);
                 if (current.IfRecordFound())    //end computing if the solution is found
@@ -54,7 +53,7 @@ namespace AILab3
 
                 var neighbours = current.GetNeighboursFromList(statesList); //get neighbours
 
-                var unclosedNeighbours = GetUnclosed(neighbours, path);     //filter neighbours from 
+                var unclosedNeighbours = GetUnclosed(neighbours, path, current);     //filter neighbours from 
                                                                             //states in the path and dead ends
 
                 if(unclosedNeighbours.Count == 0)   // no candidates => returning to previous State
@@ -73,20 +72,20 @@ namespace AILab3
                     var number = random.Next(0, unclosedNeighbours.Count);  //choosing a random next state
                                                                             //from opened neighbours
                     candidate = unclosedNeighbours[number];
+
                 } while (candidate.IsInList(path));
                 current = candidate;   
-                i++;
                 iterations++;
             }
             return path.Distinct().ToList();
         }
-        static List<State> GetUnclosed(List<State> neighbours, List<State> path) 
+        static List<State> GetUnclosed(List<State> neighbours, List<State> path, State current) 
         {       //gets only opened neighbours (which are not in the path and are not dead end)
-
+                //checks hill climb condition - we do not go down to lower cost
             var res = new List<State>();
             foreach(var x in neighbours)
             {
-                if (!x.IsInList(path) && !x.Closed)
+                if (!x.IsInList(path) && !x.Closed && x.Cost >= current.Cost) 
                     res.Add(x);
             }
             return res;
