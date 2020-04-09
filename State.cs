@@ -135,6 +135,7 @@ namespace AILab3
         {
             foreach(var x in _balls)
                 Console.Write(x.Color + "   ");
+            Console.Write("Cost: " + _cost);
             Console.WriteLine("\n"); 
         }
     }

@@ -66,14 +66,11 @@ namespace AILab3
                     continue;
                 }
                 State candidate;
-                do
-                {
-                    var random = new Random();
-                    var number = random.Next(0, unclosedNeighbours.Count);  //choosing a random next state
-                                                                            //from opened neighbours
-                    candidate = unclosedNeighbours[number];
 
-                } while (candidate.IsInList(path));
+                var random = new Random();
+                var number = random.Next(0, unclosedNeighbours.Count);  //choosing a random next state
+                                                                        //from opened neighbours
+                candidate = unclosedNeighbours[number];
                 current = candidate;   
                 iterations++;
             }
